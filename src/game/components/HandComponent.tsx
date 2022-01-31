@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { PlayerHand } from '../logic/PlayerHand';
-import Cell from "./Cell";
+import { HandCell } from "./Cell";
 import GamePieceComponent from './GamePieceComponent';
 
 const HandWrapper = styled.div`
@@ -15,20 +15,21 @@ const Hand = styled.div<{ handSize: number, squareSize: number }>`
     grid-template-rows: ${props => props.squareSize}px;
 `;
 
-export default function HandComponent({ hand, handSize, squareSize }: { hand: PlayerHand, handSize: number, squareSize: number }) {
+export default function HandComponent({ hand, squareSize }: { hand: PlayerHand, squareSize: number }) {
+    let handSize = hand.getPieces().length;
     return (
         <HandWrapper>
             <Hand handSize={handSize} squareSize={squareSize}>
                 {Array(handSize).fill(0).map((_, i) => {
                     const piece = hand.getPiece(i);
                     return (
-                        <Cell
+                        <HandCell
                             key={`handCell${i}`}
                             dark={i % 2 === 0} 
                             className={`handCell${i}`}
                         >
                             {piece && <GamePieceComponent gamePiece={piece} /> }
-                        </Cell>
+                        </HandCell>
                     );}
                 )}
             </Hand>

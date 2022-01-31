@@ -1,6 +1,8 @@
 import styled from 'styled-components';
+import GamePiece from '../logic/GamePiece';
 import { BoardSize } from '../types';
-import Cell from './Cell';
+import { BoardCell } from './Cell';
+import GamePieceComponent from './GamePieceComponent';
 
 const StyledBoard = styled.div<{ boardSize: BoardSize, squareSize: number }>`
     display: grid;
@@ -8,17 +10,28 @@ const StyledBoard = styled.div<{ boardSize: BoardSize, squareSize: number }>`
     grid-template-rows: repeat(${props => props.boardSize.y}, ${props => props.squareSize}px);
 `;
 
-export default function BoardComponent({ boardSize, squareSize } : { boardSize: BoardSize, squareSize: number }) {
+type Props = { 
+    boardSize: BoardSize,
+    squareSize: number,
+    pieces: Array<GamePiece | null>,
+    onDropPiece: (pieceId: number, row: number, col: number) => void
+};
+
+export default function BoardComponent({ boardSize, squareSize, pieces, onDropPiece } : Props) {
     return (
         <StyledBoard className="board" boardSize={boardSize} squareSize={squareSize}>
             {Array(boardSize.x).fill(0).map((_, col) => {
                 return Array(boardSize.y).fill(0).map((_, row) => {
+                    const piece = pieces[row * boardSize.x + col];
                     return (
-                        <Cell
+                        <BoardCell
                             key={`cell-${col}=${row}`}
+                            onDrop={(pieceId: number) => { onDropPiece(pieceId, row, col); }}
                             className="boardCell"
                             dark={(col % boardSize.x + row % 2) % 2 === 0}
-                        />
+                        >
+                            {piece && <GamePieceComponent gamePiece={piece} /> }
+                        </BoardCell>
                     );
                 })
             })}

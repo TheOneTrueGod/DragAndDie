@@ -3,6 +3,9 @@ import BoardComponent from "./components/BoardComponent"
 import { GameData } from "./logic/GameData";
 import { BoardSize } from "./types";
 import HandComponent from "./components/HandComponent";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import GamePiece from "./logic/GamePiece";
 
 const boardSize: BoardSize = { x: 8, y: 8 };
 const handSize: number = 3;
@@ -19,12 +22,18 @@ export default class GameContainer extends React.Component<Props, State> {
         this.state = {};
     }
 
+    onDropPiece(pieceId: number, row: number, col: number) {
+        let piece = this.gameData.getPiece(pieceId);
+        this.gameData.setPieceLocation(row, col, piece);
+        this.setState({});
+    }
+
     render() {
         return (
-            <div>
-                <BoardComponent boardSize={boardSize} squareSize={SQUARE_SIZE} />
-                <HandComponent handSize={handSize} squareSize={SQUARE_SIZE} hand={this.gameData.playerHand} />
-            </div>
+            <DndProvider backend={HTML5Backend}>
+                <BoardComponent boardSize={boardSize} squareSize={SQUARE_SIZE} pieces={this.gameData.boardPieces} onDropPiece={this.onDropPiece.bind(this)} />
+                <HandComponent squareSize={SQUARE_SIZE} hand={this.gameData.playerHand} />
+            </DndProvider>
         );
     }
 }
