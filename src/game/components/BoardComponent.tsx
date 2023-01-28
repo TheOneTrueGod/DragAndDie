@@ -20,15 +20,15 @@ type Props = {
 export default function BoardComponent({ boardSize, squareSize, pieces, onDropPiece } : Props) {
     return (
         <StyledBoard className="board" boardSize={boardSize} squareSize={squareSize}>
-            {Array(boardSize.x).fill(0).map((_, col) => {
-                return Array(boardSize.y).fill(0).map((_, row) => {
+            {Array(boardSize.y).fill(0).map((_, row) => {
+                return Array(boardSize.x).fill(0).map((_, col) => {
                     const piece = pieces[row * boardSize.x + col];
                     return (
                         <BoardCell
                             key={`cell-${col}=${row}`}
                             onDrop={(pieceId: number) => { onDropPiece(pieceId, row, col); }}
                             className="boardCell"
-                            dark={(col % boardSize.x + row % 2) % 2 === 0}
+                            dark={(col + row % 2) % 2 === 0}
                         >
                             {piece && <GamePieceComponent gamePiece={piece} /> }
                         </BoardCell>

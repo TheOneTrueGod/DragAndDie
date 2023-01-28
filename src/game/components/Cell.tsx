@@ -1,10 +1,10 @@
 import React from 'react';
-import { ConnectDropTarget, useDrop } from 'react-dnd';
+import { useDrop } from 'react-dnd';
 import styled from 'styled-components';
 import { DraggableTypes } from '../constants';
-import GamePiece from '../logic/GamePiece';
+
 const StyledCell = styled.div<{ dark?: boolean }>`
-    background-color: ${props => props.dark ? "rgb(240, 217, 181)" : "rgb(181, 136, 99)"};
+    background-color: ${props => props.dark ? "rgb(20, 120, 47)" : "rgb(55, 191, 92)"};
     padding: 4px;
 `;
 

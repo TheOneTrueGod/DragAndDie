@@ -1,5 +1,4 @@
 import GamePiece from "./GamePiece";
-import { createRandomPiece } from "./PieceDef";
 
 export class PlayerHand {
     private pieces: Array<GamePiece> = [];
