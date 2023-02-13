@@ -9,7 +9,7 @@ const Image = styled.img`
   border-radius: 50%;
 `;
 
-export default function GamePieceComponent({
+export default function HandPieceComponent({
   gamePiece,
 }: {
   gamePiece: GamePiece;
@@ -21,7 +21,6 @@ export default function GamePieceComponent({
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),
-      canDrag: () => false,
     }),
     [gamePiece]
   );
