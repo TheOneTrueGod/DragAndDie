@@ -1,4 +1,10 @@
-import { BoardSize, PieceLocation, PlayerName } from "../types";
+import {
+  BoardSize,
+  GamePhase,
+  PieceLocation,
+  PiecePosition,
+  PlayerName,
+} from "../types";
 import GamePiece from "./GamePiece";
 import { createEnemyPiece, createRandomPiece } from "./PieceDef";
 import { PlayerHand } from "./PlayerHand";
@@ -18,6 +24,14 @@ export class GameData {
 
     this.boardPieces = Array(this.gameSize.x * this.gameSize.y).fill(null);
     this.addEnemies();
+  }
+
+  getTurnNumber(): number {
+    return 0;
+  }
+
+  getGamePhase(): GamePhase {
+    return "PlayerInput";
   }
 
   addEnemy(col: number, row: number) {
@@ -61,6 +75,27 @@ export class GameData {
     } else {
       this.boardPieces[currLocation] = null;
     }
-    this.boardPieces[this.gameSize.x * row + col] = gamePiece;
+    const newLocation = this.gameSize.x * row + col;
+    this.boardPieces[newLocation] = gamePiece;
+    gamePiece.setLocation(newLocation);
+  }
+
+  locationToPosition(location: PieceLocation): PiecePosition {
+    if (location === "Hand") {
+      console.warn(
+        "Trying to get the position of a game piece in your hand..."
+      );
+      return { row: 0, col: 0 };
+    }
+    return {
+      row: Math.floor(location / this.gameSize.x),
+      col: location % this.gameSize.x,
+    };
+  }
+
+  doEndTurn() {
+    Object.values(this.gamePieces).forEach((piece) => {
+      piece.doEndTurn(this);
+    });
   }
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import BoardComponent from "./components/BoardComponent";
 import { GameData } from "./logic/GameData";
-import { BoardSize } from "./types";
+import { BoardSize, GamePhase } from "./types";
 import HandComponent from "./components/HandComponent";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -13,27 +13,17 @@ const handSize: number = 3;
 const SQUARE_SIZE: number = 60;
 
 type Props = {};
-type State = {};
-
-const EndTurnButton = styled.button`
-  margin-top: 8px;
-  border: none;
-  padding: 16px;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  background: lightgreen;
-  :active {
-    background: green;
-  }
-`;
+type State = { turnNumber: number; gamePhase: GamePhase };
 
 export default class GameContainer extends React.Component<Props, State> {
   gameData: GameData;
   constructor(props: Props, state: State) {
     super(props);
     this.gameData = new GameData(boardSize, handSize);
-    this.state = {};
+    this.state = {
+      turnNumber: 0,
+      gamePhase: "PlayerInput",
+    };
   }
 
   onDropPiece(pieceId: number, row: number, col: number) {
@@ -42,10 +32,17 @@ export default class GameContainer extends React.Component<Props, State> {
     this.setState({});
   }
 
+  onEndTurnClick() {
+    this.gameData.doEndTurn();
+    this.setState({});
+  }
+
   render() {
     return (
       <DndProvider backend={HTML5Backend}>
         <BoardComponent
+          turnNumber={this.gameData.getTurnNumber()}
+          gamePhase={this.gameData.getGamePhase()}
           boardSize={boardSize}
           squareSize={SQUARE_SIZE}
           pieces={this.gameData.boardPieces}
@@ -55,7 +52,7 @@ export default class GameContainer extends React.Component<Props, State> {
           squareSize={SQUARE_SIZE}
           hand={this.gameData.playerHand}
         />
-        <Button onClick={() => alert("Hi")}>End Turn</Button>
+        <Button onClick={() => this.onEndTurnClick()}>End Turn</Button>
       </DndProvider>
     );
   }

@@ -2,6 +2,14 @@ import styled from "styled-components";
 import GamePiece from "../logic/GamePiece";
 import { useDrag } from "react-dnd";
 import { DraggableTypes } from "../constants";
+import { BoardSize } from "../types";
+import { useEffect } from "react";
+
+const PieceWrapper = styled.div`
+  position: absolute;
+  padding: 4px;
+  box-sizing: border-box;
+`;
 
 const Image = styled.img`
   width: 100%;
@@ -10,8 +18,12 @@ const Image = styled.img`
 `;
 
 export default function GamePieceComponent({
+  boardSize,
+  squareSize,
   gamePiece,
 }: {
+  boardSize: BoardSize;
+  squareSize: number;
   gamePiece: GamePiece;
 }) {
   const [{ isDragging }, dragRef] = useDrag(
@@ -26,9 +38,20 @@ export default function GamePieceComponent({
     [gamePiece]
   );
 
+  const position = gamePiece.getPosition(boardSize);
+
   return (
-    <div key={gamePiece.getId()} ref={dragRef}>
+    <PieceWrapper
+      style={{
+        top: squareSize * position.row + "px",
+        left: squareSize * position.col + "px",
+        width: squareSize + "px",
+        height: squareSize + "px",
+      }}
+      key={gamePiece.getId()}
+      ref={dragRef}
+    >
       <Image src={`${gamePiece.getImageUrl()}`} />
-    </div>
+    </PieceWrapper>
   );
 }
