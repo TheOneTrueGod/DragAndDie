@@ -15,7 +15,7 @@ const ContainerWrapper = styled.div`
 type Props = {
   boardSize: BoardSize;
   squareSize: number;
-  pieces: Array<GamePiece | null>;
+  pieces: { [key: number]: GamePiece };
 };
 
 export default function GamePieceContainer({
@@ -25,7 +25,7 @@ export default function GamePieceContainer({
 }: Props) {
   return (
     <ContainerWrapper>
-      {pieces.map(
+      {Object.values(pieces).map(
         (piece) =>
           piece && (
             <GamePieceComponent

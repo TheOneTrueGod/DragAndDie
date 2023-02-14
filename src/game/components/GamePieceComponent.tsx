@@ -38,7 +38,7 @@ export default function GamePieceComponent({
     [gamePiece]
   );
 
-  const position = gamePiece.getPosition(boardSize);
+  const position = gamePiece.getPosition();
 
   return (
     <PieceWrapper

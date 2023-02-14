@@ -9,6 +9,7 @@ export default class GamePiece {
   constructor(
     private owner: PlayerName,
     private location: PieceLocation,
+    private position: PiecePosition,
     private pieceDef: PieceDef
   ) {
     this.id = ID++;
@@ -26,26 +27,31 @@ export default class GamePiece {
   getLocation() {
     return this.location;
   }
-  setLocation(location: PieceLocation) {
-    this.location = location;
+  getPosition() {
+    return { row: this.position.row, col: this.position.col };
   }
-  getPosition(boardSize: BoardSize): PiecePosition {
-    if (this.location === "Hand") {
-      return { row: 0, col: 0 };
-    }
-    return {
-      row: Math.floor(this.location / boardSize.x),
-      col: this.location % boardSize.x,
-    };
+  setPosition(position: PiecePosition, location?: PieceLocation) {
+    this.position = { row: position.row, col: position.col };
+    location && (this.location = location);
   }
 
   doEndTurn(gameData: GameData) {
-    if (this.location === "Hand") {
-      return;
-    }
-    if (this.owner === "Player") {
-      const position = gameData.locationToPosition(this.location);
-      gameData.setPieceLocation(position.row, position.col + 1, this);
+    if (this.location === "Board") {
+      if (this.owner === "Player") {
+        const moveTo = { row: this.position.row, col: this.position.col + 1 };
+        const pieceAtTarget = gameData.getPieceAtPosition(
+          moveTo.row,
+          moveTo.col
+        );
+        if (!pieceAtTarget) {
+          gameData.setPiecePosition(
+            this.position.row,
+            this.position.col + 1,
+            "Board",
+            this
+          );
+        }
+      }
     }
   }
 }

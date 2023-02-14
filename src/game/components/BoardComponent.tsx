@@ -21,7 +21,7 @@ const StyledBoard = styled.div<{ boardSize: BoardSize; squareSize: number }>`
 type Props = {
   boardSize: BoardSize;
   squareSize: number;
-  pieces: Array<GamePiece | null>;
+  pieces: { [key: number]: GamePiece };
   onDropPiece: (pieceId: number, row: number, col: number) => void;
   turnNumber: number;
   gamePhase: GamePhase;

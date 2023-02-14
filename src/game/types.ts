@@ -6,5 +6,5 @@ export type GamePhase =
   | "EnemyMove"
   | "PlayerAttack"
   | "EnemyAttack";
-export type PieceLocation = "Hand" | number;
+export type PieceLocation = "Hand" | "Board";
 export type PiecePosition = { row: number; col: number };

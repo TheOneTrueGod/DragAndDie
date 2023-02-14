@@ -11,7 +11,7 @@ import { PlayerHand } from "./PlayerHand";
 
 export class GameData {
   public playerHand: PlayerHand;
-  public boardPieces: Array<GamePiece | null>;
+  public boardPieces: { [key: number]: GamePiece };
   public gamePieces: Record<number, GamePiece> = {};
 
   constructor(private gameSize: BoardSize, handSize: number) {
@@ -19,10 +19,12 @@ export class GameData {
     Array(handSize)
       .fill(0)
       .forEach(() => {
-        this.playerHand.addPiece(this.createRandomPiece("Player", "Hand"));
+        this.playerHand.addPiece(
+          this.createRandomPiece("Player", "Hand", { row: 0, col: 0 })
+        );
       });
 
-    this.boardPieces = Array(this.gameSize.x * this.gameSize.y).fill(null);
+    this.boardPieces = {};
     this.addEnemies();
   }
 
@@ -37,12 +39,13 @@ export class GameData {
   addEnemy(col: number, row: number) {
     let enemyPiece = new GamePiece(
       "Computer",
-      this.gameSize.x * row + col,
+      "Board",
+      { row: row, col: col },
       createEnemyPiece()
     );
 
     this.gamePieces[enemyPiece.getId()] = enemyPiece;
-    this.setPieceLocation(row, col, enemyPiece);
+    this.setPiecePosition(row, col, "Board", enemyPiece);
     return enemyPiece;
   }
 
@@ -52,8 +55,17 @@ export class GameData {
     this.addEnemy(9, 3);
   }
 
-  createRandomPiece(owner: PlayerName, location: PieceLocation): GamePiece {
-    let newPiece = new GamePiece(owner, location, createRandomPiece());
+  createRandomPiece(
+    owner: PlayerName,
+    location: PieceLocation,
+    position: PiecePosition
+  ): GamePiece {
+    let newPiece = new GamePiece(
+      owner,
+      location,
+      position,
+      createRandomPiece()
+    );
     this.gamePieces[newPiece.getId()] = newPiece;
     return newPiece;
   }
@@ -67,30 +79,35 @@ export class GameData {
     return this.gamePieces[id];
   }
 
-  setPieceLocation(row: number, col: number, gamePiece: GamePiece) {
+  setPiecePosition(
+    row: number,
+    col: number,
+    location: PieceLocation,
+    gamePiece: GamePiece
+  ) {
     const currLocation = gamePiece.getLocation();
-    if (currLocation === "Hand") {
-      this.playerHand.removePiece(gamePiece);
-      this.playerHand.addPiece(this.createRandomPiece("Player", "Hand"));
-    } else {
-      this.boardPieces[currLocation] = null;
+    const currPosition = gamePiece.getPosition();
+    switch (currLocation) {
+      case "Hand":
+        this.playerHand.removePiece(gamePiece);
+        this.playerHand.addPiece(
+          this.createRandomPiece("Player", "Hand", { row: 0, col: 0 })
+        );
+        break;
+      case "Board":
+        delete this.boardPieces[currPosition.row * 10000 + currPosition.col];
+        break;
     }
-    const newLocation = this.gameSize.x * row + col;
-    this.boardPieces[newLocation] = gamePiece;
-    gamePiece.setLocation(newLocation);
+
+    this.boardPieces[row * 10000 + col] = gamePiece;
+    gamePiece.setPosition({ row: row, col: col }, location);
   }
 
-  locationToPosition(location: PieceLocation): PiecePosition {
-    if (location === "Hand") {
-      console.warn(
-        "Trying to get the position of a game piece in your hand..."
-      );
-      return { row: 0, col: 0 };
+  getPieceAtPosition(row: number, col: number): GamePiece | undefined {
+    if (this.boardPieces[row * 10000 + col]) {
+      return this.boardPieces[row * 10000 + col];
     }
-    return {
-      row: Math.floor(location / this.gameSize.x),
-      col: location % this.gameSize.x,
-    };
+    return undefined;
   }
 
   doEndTurn() {

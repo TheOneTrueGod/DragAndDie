@@ -28,7 +28,7 @@ export default class GameContainer extends React.Component<Props, State> {
 
   onDropPiece(pieceId: number, row: number, col: number) {
     let piece = this.gameData.getPiece(pieceId);
-    this.gameData.setPieceLocation(row, col, piece);
+    this.gameData.setPiecePosition(row, col, "Board", piece);
     this.setState({});
   }
 
