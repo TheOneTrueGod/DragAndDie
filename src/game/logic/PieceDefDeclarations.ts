@@ -6,6 +6,8 @@ import elephant4 from "../../images/1275-1300c.jpg";
 
 import { BasicAttackAttachment } from "./unitAttachments/BasicAttackAttachment";
 import { UnitAttachment } from "./unitAttachments/UnitAttachment";
+import DamageComponent from "./unitAttachments/attachmentComponents/DamageComponent";
+import { SummonEffectAttachment } from "./unitAttachments/SummonEffectAttachment";
 
 type PieceDefDeclaration = {
   id: number;
@@ -21,14 +23,27 @@ export const pieceDefDeclarations: Array<PieceDefDeclaration> = [
     name: "Test0",
     img: elephant0,
     health: 3,
-    attachmentDefs: [new BasicAttackAttachment()],
+    attachmentDefs: [
+      new BasicAttackAttachment([new DamageComponent({ damage: 2 })]),
+    ],
   },
   {
     id: 1,
     name: "Test1",
     img: elephant1,
     health: 3,
-    attachmentDefs: [new BasicAttackAttachment()],
+    attachmentDefs: [
+      new BasicAttackAttachment(),
+      new SummonEffectAttachment(
+        new DamageComponent({
+          damage: 1,
+          spotsToHit: [
+            [1, -1],
+            [1, 1],
+          ],
+        })
+      ),
+    ],
   },
   {
     id: 2,
