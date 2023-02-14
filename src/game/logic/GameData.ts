@@ -6,7 +6,11 @@ import {
   PlayerName,
 } from "../types";
 import GamePiece from "./GamePiece";
-import { createEnemyPiece, createRandomPiece } from "./PieceDef";
+import PieceDef, {
+  createEnemyPiece,
+  createRandomPiece,
+  getPieceDef,
+} from "./PieceDef";
 import { PlayerHand } from "./PlayerHand";
 
 export class GameData {
@@ -18,9 +22,14 @@ export class GameData {
     this.playerHand = new PlayerHand();
     Array(handSize)
       .fill(0)
-      .forEach(() => {
+      .forEach((_, i) => {
         this.playerHand.addPiece(
-          this.createRandomPiece("Player", "Hand", { row: 0, col: 0 })
+          this.createRandomPiece(
+            "Player",
+            "Hand",
+            { row: 0, col: 0 },
+            getPieceDef(i)
+          )
         );
       });
 
@@ -58,14 +67,10 @@ export class GameData {
   createRandomPiece(
     owner: PlayerName,
     location: PieceLocation,
-    position: PiecePosition
+    position: PiecePosition,
+    pieceDef: PieceDef
   ): GamePiece {
-    let newPiece = new GamePiece(
-      owner,
-      location,
-      position,
-      createRandomPiece()
-    );
+    let newPiece = new GamePiece(owner, location, position, pieceDef);
     this.gamePieces[newPiece.getId()] = newPiece;
     return newPiece;
   }
@@ -107,7 +112,12 @@ export class GameData {
     switch (currLocation) {
       case "Hand":
         this.playerHand.addPiece(
-          this.createRandomPiece("Player", "Hand", { row: 0, col: 0 })
+          this.createRandomPiece(
+            "Player",
+            "Hand",
+            { row: 0, col: 0 },
+            gamePiece.getPieceDef()
+          )
         );
         gamePiece.doSummonAction(this);
         break;

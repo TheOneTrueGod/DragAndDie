@@ -5,11 +5,10 @@ import { BoardSize, GamePhase } from "./types";
 import HandComponent from "./components/HandComponent";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import styled from "styled-components";
 import Button from "./components/common/Button";
 
 const boardSize: BoardSize = { x: 12, y: 5 };
-const handSize: number = 3;
+const handSize: number = 5;
 const SQUARE_SIZE: number = 60;
 
 type Props = {};

@@ -22,6 +22,9 @@ export default class GamePiece {
   getId() {
     return this.id;
   }
+  getPieceDef() {
+    return this.pieceDef;
+  }
   getName() {
     return this.pieceDef.getName();
   }
