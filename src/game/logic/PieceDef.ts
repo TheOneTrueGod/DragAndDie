@@ -4,9 +4,24 @@ import elephant3 from "../../images/1275-1300b.jpg";
 import elephant4 from "../../images/1275-1300c.jpg";
 import elephant5 from "../../images/1511.jpg";
 import enemyImg from "../../images/generic_enemy.png";
+import { BasicAttackAttachment } from "./unitAttachments/BasicAttackAttachment";
+import { UnitAttachment } from "./unitAttachments/UnitAttachment";
 
 export default class PieceDef {
-  constructor(private name: string, private imageSrc: string) {}
+  constructor(
+    private name: string,
+    private health: number,
+    private imageSrc: string,
+    private attachments: Array<UnitAttachment>
+  ) {}
+
+  getAttachments() {
+    return this.attachments;
+  }
+
+  getHealth(): number {
+    return this.health;
+  }
 
   getName(): string {
     return this.name;
@@ -17,7 +32,7 @@ export default class PieceDef {
 }
 
 export function createEnemyPiece() {
-  return new PieceDef("enemy", enemyImg);
+  return new PieceDef("enemy", 5, enemyImg, [new BasicAttackAttachment()]);
 }
 
 export function createRandomPiece() {
@@ -29,5 +44,10 @@ export function createRandomPiece() {
   const pt2 = namept2[Math.floor(Math.random() * namept2.length)];
   const img = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
 
-  return new PieceDef(pt1 + "phan" + pt2, img);
+  const health = Math.floor(Math.random() * 3 + 3);
+
+  const pieceDef = new PieceDef(pt1 + "phan" + pt2, health, img, [
+    new BasicAttackAttachment(),
+  ]);
+  return pieceDef;
 }

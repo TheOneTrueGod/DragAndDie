@@ -79,6 +79,20 @@ export class GameData {
     return this.gamePieces[id];
   }
 
+  removePiece(gamePiece: GamePiece) {
+    const currLocation = gamePiece.getLocation();
+    const currPosition = gamePiece.getPosition();
+    if (currLocation === "Board") {
+      delete this.boardPieces[currPosition.row * 10000 + currPosition.col];
+    } else if (currLocation === "Hand") {
+      this.playerHand.removePiece(gamePiece);
+    } else {
+      throw new Error(
+        "Not Implemented: Removal of units from a non-board location"
+      );
+    }
+  }
+
   setPiecePosition(
     row: number,
     col: number,
@@ -86,16 +100,12 @@ export class GameData {
     gamePiece: GamePiece
   ) {
     const currLocation = gamePiece.getLocation();
-    const currPosition = gamePiece.getPosition();
+    this.removePiece(gamePiece);
     switch (currLocation) {
       case "Hand":
-        this.playerHand.removePiece(gamePiece);
         this.playerHand.addPiece(
           this.createRandomPiece("Player", "Hand", { row: 0, col: 0 })
         );
-        break;
-      case "Board":
-        delete this.boardPieces[currPosition.row * 10000 + currPosition.col];
         break;
     }
 
@@ -111,8 +121,20 @@ export class GameData {
   }
 
   doEndTurn() {
-    Object.values(this.gamePieces).forEach((piece) => {
-      piece.doEndTurn(this);
+    const gamePieceList = Object.values(this.gamePieces);
+    gamePieceList.forEach((piece) => {
+      piece.doMoveAction(this);
+    });
+
+    gamePieceList.forEach((piece) => {
+      piece.doAttackAction(this);
+    });
+
+    gamePieceList.forEach((piece) => {
+      if (piece.readyToDelete()) {
+        delete this.gamePieces[piece.getId()];
+        this.removePiece(piece);
+      }
     });
   }
 }

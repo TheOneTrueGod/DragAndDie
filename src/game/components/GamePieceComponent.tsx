@@ -17,6 +17,20 @@ const Image = styled.img`
   border-radius: 50%;
 `;
 
+const HealthText = styled.div`
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  color: red;
+  background: white;
+  border: 1px solid black;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  font-weight: bold;
+`;
+
 export default function GamePieceComponent({
   boardSize,
   squareSize,
@@ -52,6 +66,7 @@ export default function GamePieceComponent({
       ref={dragRef}
     >
       <Image src={`${gamePiece.getImageUrl()}`} />
+      <HealthText>{gamePiece.getHealth()}</HealthText>
     </PieceWrapper>
   );
 }
