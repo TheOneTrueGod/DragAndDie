@@ -5,6 +5,7 @@ import elephant4 from "../../images/1275-1300c.jpg";
 import elephant5 from "../../images/1511.jpg";
 import enemyImg from "../../images/generic_enemy.png";
 import { BasicAttackAttachment } from "./unitAttachments/BasicAttackAttachment";
+import { DiagonalSummonDamageAttachment } from "./unitAttachments/DiagonalSummonDamageAttachment";
 import { UnitAttachment } from "./unitAttachments/UnitAttachment";
 
 export default class PieceDef {
@@ -48,6 +49,7 @@ export function createRandomPiece() {
 
   const pieceDef = new PieceDef(pt1 + "phan" + pt2, health, img, [
     new BasicAttackAttachment(),
+    new DiagonalSummonDamageAttachment(),
   ]);
   return pieceDef;
 }

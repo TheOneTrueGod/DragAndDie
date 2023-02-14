@@ -60,6 +60,15 @@ export default class GamePiece {
     }
   }
 
+  doSummonAction(gameData: GameData) {
+    if (this.location !== "Board") {
+      return;
+    }
+    this.attachments.forEach((attachment) => {
+      attachment.doSummonAction(this, gameData);
+    });
+  }
+
   doAttackAction(gameData: GameData) {
     if (this.location !== "Board") {
       return;

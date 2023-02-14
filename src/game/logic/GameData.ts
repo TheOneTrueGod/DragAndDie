@@ -101,16 +101,18 @@ export class GameData {
   ) {
     const currLocation = gamePiece.getLocation();
     this.removePiece(gamePiece);
+
+    this.boardPieces[row * 10000 + col] = gamePiece;
+    gamePiece.setPosition({ row: row, col: col }, location);
     switch (currLocation) {
       case "Hand":
         this.playerHand.addPiece(
           this.createRandomPiece("Player", "Hand", { row: 0, col: 0 })
         );
+        gamePiece.doSummonAction(this);
         break;
     }
-
-    this.boardPieces[row * 10000 + col] = gamePiece;
-    gamePiece.setPosition({ row: row, col: col }, location);
+    this.cleanupStep();
   }
 
   getPieceAtPosition(row: number, col: number): GamePiece | undefined {
@@ -130,6 +132,11 @@ export class GameData {
       piece.doAttackAction(this);
     });
 
+    this.cleanupStep();
+  }
+
+  cleanupStep() {
+    const gamePieceList = Object.values(this.gamePieces);
     gamePieceList.forEach((piece) => {
       if (piece.readyToDelete()) {
         delete this.gamePieces[piece.getId()];
